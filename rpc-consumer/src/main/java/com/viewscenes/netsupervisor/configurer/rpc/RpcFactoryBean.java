@@ -1,5 +1,6 @@
 package com.viewscenes.netsupervisor.configurer.rpc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -8,6 +9,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by MACHENIKE on 2018-12-03.
  */
+@Slf4j
 public class RpcFactoryBean<T> implements FactoryBean<T> {
 
     private Class<T> rpcInterface;
@@ -34,6 +36,7 @@ public class RpcFactoryBean<T> implements FactoryBean<T> {
     }
 
     public <T> T getRpc() {
+        log.info("rpcInterface.{},getClassLoader.{}",rpcInterface,rpcInterface.getClassLoader());
         return (T) Proxy.newProxyInstance(rpcInterface.getClassLoader(), new Class[] { rpcInterface },factory);
     }
 }

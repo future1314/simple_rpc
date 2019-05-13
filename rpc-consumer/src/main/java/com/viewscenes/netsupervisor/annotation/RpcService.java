@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
  * @author: shiqizhen
  * @create: 2018-11-30 17:07
  **/
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Component
+//@Target({ElementType.TYPE})
+//@Retention(RetentionPolicy.RUNTIME)
+//@Component
 public @interface RpcService {
 }
