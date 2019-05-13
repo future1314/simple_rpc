@@ -12,7 +12,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  * @create: 2018-12-07 10:00
  **/
 public class JSONDecoder extends LengthFieldBasedFrameDecoder {
-
+    ///frame
     public JSONDecoder() {
         super(65535, 0, 4,0,4);
     }
