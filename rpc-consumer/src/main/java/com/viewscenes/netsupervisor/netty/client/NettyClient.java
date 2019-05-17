@@ -48,6 +48,7 @@ public class NettyClient {
 
 
     public NettyClient(){
+        logger.info("----NettyClient()-----");
         bootstrap.group(group).
                 channel(NioSocketChannel.class).
                 option(ChannelOption.TCP_NODELAY, true).
@@ -71,22 +72,23 @@ public class NettyClient {
     }
 
     public Object send(Request request) throws InterruptedException{
-
+        logger.info("----send()-----");
         Channel channel = connectManage.chooseChannel();
         if (channel!=null && channel.isActive()) {
-            SynchronousQueue<Object> queue = clientHandler.sendRequest(request,channel);
-            Object result = queue.take();
+            SynchronousQueue<Object> queue = clientHandler.sendRequest(request,channel);//为什么用队列呢
+            Object result = queue.take();//阻塞么
             return JSONArray.toJSONString(result);
         }else{
-            Response res = new Response();
+            Response res = new Response();//
             res.setCode(1);
             res.setError_msg("未正确连接到服务器.请检查相关配置信息!");
             return JSONArray.toJSONString(res);
         }
     }
     public Channel doConnect(SocketAddress address) throws InterruptedException {
+        logger.info("----NettyClient----连接----");
         ChannelFuture future = bootstrap.connect(address);
-        Channel channel = future.sync().channel();
+        Channel channel = future.sync().channel();//
         return channel;
     }
 }

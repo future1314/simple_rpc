@@ -22,21 +22,24 @@ public class RpcFactoryBean<T> implements FactoryBean<T> {
     public RpcFactoryBean(Class<T> rpcInterface) {
         this.rpcInterface = rpcInterface;
     }
-
+    @Override
     public T getObject() throws Exception {
+        log.info("FactoryBean--------getObject--");
         return getRpc();
     }
-
+    @Override
     public Class<?> getObjectType() {
+        log.info("FactoryBean--------getObjectType--： "+rpcInterface);
         return this.rpcInterface;
     }
-
+    @Override
     public boolean isSingleton() {
+        log.info("FactoryBean--------isSingleton--");
         return true;
     }
 
     public <T> T getRpc() {
-        log.info("rpcInterface.{},getClassLoader.{}",rpcInterface,rpcInterface.getClassLoader());
+        log.info("FactoryBean--反射--getRpc-rpcInterface.{},getClassLoader.{}",rpcInterface,rpcInterface.getClassLoader());
         return (T) Proxy.newProxyInstance(rpcInterface.getClassLoader(), new Class[] { rpcInterface },factory);
     }
 }

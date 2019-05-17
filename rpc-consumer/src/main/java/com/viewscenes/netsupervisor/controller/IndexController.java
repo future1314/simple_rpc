@@ -48,7 +48,7 @@ public class IndexController {
                 countDownLatch.countDown();
             }).start();
         }
-        countDownLatch.await();
+        countDownLatch.await();//子线程执行完 主线程main继续执行
         long end = System.currentTimeMillis();
         logger.info("线程数：{},执行时间:{}",thread_count,(end-start));
         return null;
@@ -82,7 +82,7 @@ public class IndexController {
                 countDownLatch.countDown();
             }).start();
         }
-        countDownLatch.await();
+        countDownLatch.await();//子线程执行完 主线程main继续执行
         long end = System.currentTimeMillis();
         logger.info("线程数：{},执行时间:{}",thread_count,(end-start));
 

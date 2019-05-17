@@ -8,6 +8,7 @@ import com.viewscenes.netsupervisor.entity.Request;
 import com.viewscenes.netsupervisor.entity.Response;
 import com.viewscenes.netsupervisor.netty.client.NettyClient;
 import com.viewscenes.netsupervisor.util.IdUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.Map;
  * Created by MACHENIKE on 2018-12-03.
  */
 @Component
+@Slf4j
 public class RpcFactory<T> implements InvocationHandler {
 
     @Autowired
@@ -40,10 +42,11 @@ public class RpcFactory<T> implements InvocationHandler {
         request.setParameterTypes(method.getParameterTypes());
         request.setId(IdUtil.getId());
 
-        Object result = client.send(request);
+        Object result = client.send(request);//封装请求
         Class<?> returnType = method.getReturnType();
 
         Response response = JSON.parseObject(result.toString(), Response.class);
+        log.info("client.send------response--"+JSONObject.toJSONString(response));
         if (response.getCode()==1){
            // throw new Exception(response.getError_msg());
             return "not found";

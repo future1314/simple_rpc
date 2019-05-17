@@ -1,5 +1,7 @@
 package com.viewscenes.netsupervisor.configurer.rpc;
 
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -19,6 +21,7 @@ import java.util.Set;
 /**
  * Created by MACHENIKE on 2018-12-03.
  */
+@Slf4j
 public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
 
     private RpcFactoryBean<?> rpcFactoryBean = new RpcFactoryBean<Object>();
@@ -31,8 +34,9 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
     public ClassPathRpcScanner(BeanDefinitionRegistry registry) {
         super(registry);
     }
-
+    @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
+        log.info("ClassPathBeanDefinitionScanner--------doScan----------");
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
         if (beanDefinitions.isEmpty()) {
@@ -59,6 +63,7 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
                 @Override
                 public boolean match(MetadataReader metadataReader,
                                      MetadataReaderFactory metadataReaderFactory) {
+                    log.info("BeanDefinitionRegistryPostProcessor---addIncludeFilter---in");
                     return true;
                 }
             });
@@ -72,6 +77,7 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
                     throws IOException {
                 String className = metadataReader.getClassMetadata()
                         .getClassName();
+                log.info("BeanDefinitionRegistryPostProcessor---addExcludeFilter---ex");
                 return className.endsWith("package-info");
             }
         });
@@ -82,16 +88,17 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
         GenericBeanDefinition definition;
 
         for (BeanDefinitionHolder holder : beanDefinitions) {
-
+            log.info("BeanDefinitionRegistryPostProcessor---postProcessBeanDefinitionRegistry---"+holder);
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
             definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
             definition.setBeanClass(this.rpcFactoryBean.getClass());
 
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-            System.out.println(holder);
+            log.info("BeanDefinitionRegistryPostProcessor---postProcessBeanDefinitionRegistry---"+definition+" __ "+definition.getBeanClass()+" __ "+definition.getFactoryBeanName()+" __ "+definition.getConstructorArgumentValues());
+            //System.out.println(holder);
         }
     }
-
+    @Override
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
         return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
     }

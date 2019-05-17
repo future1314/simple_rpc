@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 @Data
 public class Request  {
-	
+	//request response user 是否等相同的东西可以提取出来。。。。
 
 	
 	private String id;
