@@ -15,6 +15,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -34,6 +35,7 @@ import java.util.Map;
  * @create: 2018-11-30 17:10
  **/
 @Component
+@Slf4j
 public class NettyServer implements ApplicationContextAware,InitializingBean{
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
@@ -47,10 +49,10 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
 
     @Autowired
     ServiceRegistry registry;
-
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
-        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RpcService.class);
+        log.info("nettyServer...setApplicationContext");
+        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RpcService.class);//
         for(Object serviceBean:beans.values()){
 
             Class<?> clazz = serviceBean.getClass();
@@ -60,13 +62,14 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
             for (Class<?> inter : interfaces){
                 String interfaceName = inter.getName();
                 logger.info("加载服务类: {}", interfaceName);
-                serviceMap.put(interfaceName, serviceBean);
+                serviceMap.put(interfaceName, serviceBean);//
             }
         }
         logger.info("已加载全部服务接口:{}", serviceMap);
     }
-
+    @Override
     public void afterPropertiesSet() throws Exception {
+        log.info("nettyServer...afterProperties");
         start();
     }
 
@@ -98,9 +101,9 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
                 int port = Integer.parseInt(array[1]);
                 ChannelFuture cf = bootstrap.bind(host,port).sync();
                 logger.info("RPC 服务器启动.监听端口:"+port);
-                registry.register(serverAddress);
+                registry.register(serverAddress);//
                 //等待服务端监听端口关闭
-                cf.channel().closeFuture().sync();
+                cf.channel().closeFuture().sync();///sync 
             } catch (Exception e) {
                 e.printStackTrace();
                 bossGroup.shutdownGracefully();

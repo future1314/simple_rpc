@@ -1,5 +1,6 @@
 package com.viewscenes.netsupervisor.registry;
 
+import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.zookeeper.*;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * Created by MACHENIKE on 2018-11-30.
  */
 @Component
+@Slf4j
 public class ServiceRegistry {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -30,6 +32,7 @@ public class ServiceRegistry {
         }
     }
     private ZkClient connectServer() {
+        log.info("ZkClient-------connect");
         ZkClient client = new ZkClient(registryAddress,20000,20000);
         return client;
     }
@@ -44,6 +47,6 @@ public class ServiceRegistry {
 
     private void createNode(ZkClient client, String data) {
         String path = client.create(ZK_REGISTRY_PATH + "/provider", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-        logger.info("创建zookeeper数据节点 ({} => {})", path, data);
+        logger.info("创建zookeeper数据节点 ({} => {})", path, data);//path 节点类型
     }
 }
